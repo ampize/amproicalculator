@@ -41,6 +41,7 @@ $app->singleton(
 
 $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     $app->get('/resource/{namespace}/{path:.*}', "ResourceController@resolve");
+    $app->get('/{path:.*}', "FrontController@render");
 });
 
 return $app;
