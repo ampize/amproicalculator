@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Laravel\Lumen\Routing\Controller as BaseController;
 
-class ResourceController extends Controller
+class ResourceController extends BaseController
 {
 
     public function resolve($namespace,$path)

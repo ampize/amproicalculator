@@ -3,10 +3,16 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 use App\Services\ResourceResolver;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public function boot()
+    {
+        Blade::setEscapedContentTags('[[', ']]');
+        Blade::setContentTags('[[[', ']]]');
+    }
     /**
      * Register any application services.
      *
