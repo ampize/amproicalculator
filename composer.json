@@ -6,6 +6,8 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "league/flysystem": "*",
+        "league/flysystem-cached-adapter":"*",
         "laravel/lumen-framework": "5.3.*",
         "vlucas/phpdotenv": "~2.2"
     },

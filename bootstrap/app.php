@@ -23,10 +23,18 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
 
-// $app->withFacades();
+ $app->withFacades();
 
 // $app->withEloquent();
 
+
+config([
+    "resourceNamespaces"=>[
+        "default"=>[
+            "path"=>realpath(__DIR__.'/../resources/default/')
+        ]
+    ],
+]);
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -48,7 +56,13 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+
+
+
+
 /*
+ *
+ *
 |--------------------------------------------------------------------------
 | Register Middleware
 |--------------------------------------------------------------------------
@@ -78,7 +92,7 @@ $app->singleton(
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
+ $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
@@ -94,7 +108,7 @@ $app->singleton(
 */
 
 $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
-    require __DIR__.'/../app/Http/routes.php';
+    $app->get('/resource/{namespace}/{path:.*}', "ResourceController@resolve");
 });
 
 return $app;
