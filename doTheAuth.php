@@ -3,10 +3,10 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 
 define('APPLICATION_NAME', 'AMPROICalculator');
-define('CREDENTIALS_PATH', __DIR__.'/credentials/sheets.credentialsjson');
+define('CREDENTIALS_PATH', __DIR__.'/credentials/credentials.json');
 define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
 define('SCOPES', implode(' ', array(
-        Google_Service_Sheets::SPREADSHEETS)
+        Google_Service_Sheets::SPREADSHEETS,Google_Service_Slides::PRESENTATIONS)
 ));
 
 if (php_sapi_name() != 'cli') {
@@ -40,7 +40,7 @@ function getClient() {
 
         // Store the credentials to disk.
         if(!file_exists(dirname($credentialsPath))) {
-            mkdir(dirname($credentialsPath), 0700, true);
+            mkdir(dirname($credentialsPath), 0777, true);
         }
         file_put_contents($credentialsPath, json_encode($accessToken));
         printf("Credentials saved to %s\n", $credentialsPath);

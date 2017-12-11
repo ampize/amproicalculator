@@ -36,7 +36,39 @@ class APIController extends BaseController
 
     public function getReport(Request $request)
     {
-        $email = $request->input("url", null);
+//        $email = $request->input("email", null);
+//        $uniqueVisitors = $request->input("uniqueVisitors", null);
+//        $averageVisits = $request->input("averageVisits", null);
+//        $averagePages = $request->input("averagePages", null);
+//        if (empty($email)||empty($uniqueVisitors)||empty($averageVisits)||empty($averagePages)) {
+//            abort(400, "Missing required params");
+//        }
+        $client=new \Google_Client();
+        $client->setApplicationName("AMPROICalculator");
+        $client->setScopes(implode(' ', array(
+                \Google_Service_Sheets::SPREADSHEETS,\Google_Service_Slides::PRESENTATIONS)
+        ));
+        $client->setAuthConfig(realpath(__DIR__.'/../../../client_secret.json'));
+        $client->setAccessType('offline');
+        $credentialsPath=realpath(__DIR__.'/../../../credentials/credentials.json');
+        $accessToken = json_decode(file_get_contents($credentialsPath), true);
+        $client->setAccessToken($accessToken);
+
+        // Refresh the token if it's expired.
+        if ($client->isAccessTokenExpired()) {
+            $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+            file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
+        }
+        $service = new \Google_Service_Sheets($client);
+        $spreadSheetModelId = "1HqEblVk-6pCX8caa90zL6uVOYDepC792Mh76TI1OcXA";
+        $model = $service->spreadsheets->get($spreadSheetModelId);
+        echo '<pre>', var_export($model, true), '</pre>', "\n";
+        return null;
+        die("ok");
+
+
     }
+
+
 
 }
