@@ -230,3 +230,5 @@ composer.extensions.json
 composer.lock
 composer.phar
 google_key.json
+/client_secret.json
+/credentials/*

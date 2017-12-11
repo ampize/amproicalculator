@@ -34,4 +34,9 @@ class APIController extends BaseController
         ]);
     }
 
+    public function getReport(Request $request)
+    {
+        $email = $request->input("url", null);
+    }
+
 }
