@@ -59,7 +59,9 @@ class APIController extends BaseController
             file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
         }
         $sheetsService = new \Google_Service_Sheets($client);
+        $slidesService = new \Google_Service_Slides($client);
         $spreadSheetModelId = "1HqEblVk-6pCX8caa90zL6uVOYDepC792Mh76TI1OcXA";
+        $slidesModelId ="1ACrSlNHwX-S-wPG5NP-ZHjRDRR4etEdlUd-9f0AXRDo";
         $driveService = new \Google_Service_Drive($client);
 
         $copiedFile = new \Google_Service_Drive_DriveFile();
@@ -82,6 +84,25 @@ class APIController extends BaseController
             $body,[
                 'valueInputOption' => 'USER_ENTERED'
             ]);
+
+        $copiedFile2 = new \Google_Service_Drive_DriveFile();
+        $copiedFile2->setName('AMP ROI on '.$url);
+        $newFile2=$driveService->files->copy($slidesModelId, $copiedFile2);
+        $newSlidesId=$newFile2->getId();
+        $requests = array();
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllText' => array(
+                'containsText' => array(
+                    'text' => 'http://www.centre-presse.fr',
+                    'matchCase' => true
+                ),
+                'replaceText' => $url
+            )
+        ));
+        $batchUpdateRequest = new \Google_Service_Slides_BatchUpdatePresentationRequest(array(
+            'requests' => $requests
+        ));
+        $slidesService->presentations->batchUpdate($newSlidesId, $batchUpdateRequest);
         die("ok");
 
 
