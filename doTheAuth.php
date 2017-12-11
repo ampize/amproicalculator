@@ -6,7 +6,7 @@ define('APPLICATION_NAME', 'AMPROICalculator');
 define('CREDENTIALS_PATH', __DIR__.'/credentials/credentials.json');
 define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
 define('SCOPES', implode(' ', array(
-        Google_Service_Sheets::SPREADSHEETS,Google_Service_Slides::PRESENTATIONS)
+        Google_Service_Sheets::SPREADSHEETS,Google_Service_Slides::PRESENTATIONS, Google_Service_Drive::DRIVE)
 ));
 
 if (php_sapi_name() != 'cli') {

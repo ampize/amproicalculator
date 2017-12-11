@@ -36,13 +36,14 @@ class APIController extends BaseController
 
     public function getReport(Request $request)
     {
-//        $email = $request->input("email", null);
-//        $uniqueVisitors = $request->input("uniqueVisitors", null);
-//        $averageVisits = $request->input("averageVisits", null);
-//        $averagePages = $request->input("averagePages", null);
-//        if (empty($email)||empty($uniqueVisitors)||empty($averageVisits)||empty($averagePages)) {
-//            abort(400, "Missing required params");
-//        }
+        $email = $request->input("email", null);
+        $url = $request->input("url", null);
+        $uniqueVisitors = $request->input("uniqueVisitors", null);
+        $averageVisits = $request->input("averageVisits", null);
+        $averagePages = $request->input("averagePages", null);
+        if (empty($email)||empty($uniqueVisitors)||empty($averageVisits)||empty($averagePages)||empty($url)) {
+            abort(400, "Missing required params");
+        }
         $client=new \Google_Client();
         $client->setApplicationName("AMPROICalculator");
         $client->setScopes(implode(' ', array(
@@ -53,37 +54,37 @@ class APIController extends BaseController
         $credentialsPath=realpath(__DIR__.'/../../../credentials/credentials.json');
         $accessToken = json_decode(file_get_contents($credentialsPath), true);
         $client->setAccessToken($accessToken);
-
-        // Refresh the token if it's expired.
         if ($client->isAccessTokenExpired()) {
             $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
             file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
         }
-        $service = new \Google_Service_Sheets($client);
+        $sheetsService = new \Google_Service_Sheets($client);
         $spreadSheetModelId = "1HqEblVk-6pCX8caa90zL6uVOYDepC792Mh76TI1OcXA";
-        $range = 'B3:C13';
-        $response = $service->spreadsheets_values->get($spreadSheetModelId, $range);
-        $modelValues = $response->getValues();
+        $driveService = new \Google_Service_Drive($client);
 
-
-
-        $requestBody = new \Google_Service_Sheets_Spreadsheet();
-        $response = $service->spreadsheets->create($requestBody);
-        $newId=$response->getSpreadsheetId();
+        $copiedFile = new \Google_Service_Drive_DriveFile();
+        $copiedFile->setName('AMP economic impact on '.$url);
+        $newFile=$driveService->files->copy($spreadSheetModelId, $copiedFile);
+        $newId=$newFile->getId();
         $body= new \Google_Service_Sheets_ValueRange([
-            'values' => $modelValues
+            'values' => [
+                [
+                    $uniqueVisitors
+                ],[
+                    $averageVisits
+                ],[
+                    $averagePages
+                ]
+            ]
         ]);
-        $undocumentedCrap = $service->spreadsheets_values->update($newId, $range,
+        $range = 'C3:C5';
+        $sheetsService->spreadsheets_values->update($newId, $range,
             $body,[
                 'valueInputOption' => 'USER_ENTERED'
             ]);
-        var_dump($undocumentedCrap);
         die("ok");
 
 
 
     }
-
-
-
 }
