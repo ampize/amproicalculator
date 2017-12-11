@@ -61,10 +61,25 @@ class APIController extends BaseController
         }
         $service = new \Google_Service_Sheets($client);
         $spreadSheetModelId = "1HqEblVk-6pCX8caa90zL6uVOYDepC792Mh76TI1OcXA";
-        $model = $service->spreadsheets->get($spreadSheetModelId);
-        echo '<pre>', var_export($model, true), '</pre>', "\n";
-        return null;
+        $range = 'B3:C13';
+        $response = $service->spreadsheets_values->get($spreadSheetModelId, $range);
+        $modelValues = $response->getValues();
+
+
+
+        $requestBody = new \Google_Service_Sheets_Spreadsheet();
+        $response = $service->spreadsheets->create($requestBody);
+        $newId=$response->getSpreadsheetId();
+        $body= new \Google_Service_Sheets_ValueRange([
+            'values' => $modelValues
+        ]);
+        $undocumentedCrap = $service->spreadsheets_values->update($newId, $range,
+            $body,[
+                'valueInputOption' => 'USER_ENTERED'
+            ]);
+        var_dump($undocumentedCrap);
         die("ok");
+
 
 
     }
