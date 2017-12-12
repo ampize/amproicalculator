@@ -26,7 +26,7 @@ class APIController extends BaseController
             ),
         ));
         $client->setClient($guzzleClient);
-        $client->setHeader('User-Agent', "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36");
+        $client->setHeader('User-Agent', "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
         $crawler = $client->request('GET', 'https://www.similarweb.com/fr/website/'.$url);
         $nbViews=$crawler->filter($this->viewsXPath)->first()->text();
         return response()->json([
@@ -122,6 +122,26 @@ class APIController extends BaseController
                 'objectId' => "g2a46cec464_0_3"
             )
         ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'refreshSheetsChart' => array(
+                'objectId' => "g2c17572a23_0_14"
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'refreshSheetsChart' => array(
+                'objectId' => "g2c17572a23_0_10"
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'refreshSheetsChart' => array(
+                'objectId' => "g2c17572a23_0_15"
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'refreshSheetsChart' => array(
+                'objectId' => "g2c17572a23_0_23"
+            )
+        ));
         $batchUpdateRequest = new \Google_Service_Slides_BatchUpdatePresentationRequest(array(
             'requests' => $requests
         ));
@@ -154,7 +174,7 @@ class APIController extends BaseController
         $sheetsService = new \Google_Service_Sheets($client);
         $slidesService = new \Google_Service_Slides($client);
         $driveService = new \Google_Service_Drive($client);
-        $slidesId="1AAOt40oGZfwWGFvt88lUf4t76mL47rltto4IiUTkMpg";
+        $slidesId="1ACrSlNHwX-S-wPG5NP-ZHjRDRR4etEdlUd-9f0AXRDo";
         $slides=$slidesService->presentations->get($slidesId);
         return response()->json($slides->toSimpleObject());
     }
