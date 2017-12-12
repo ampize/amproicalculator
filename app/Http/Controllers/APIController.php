@@ -88,10 +88,28 @@ class APIController extends BaseController
         $requests[] = new \Google_Service_Slides_Request(array(
             'replaceAllText' => array(
                 'containsText' => array(
-                    'text' => 'http://www.centre-presse.fr',
+                    'text' => '{{siteUrl}}',
                     'matchCase' => true
                 ),
                 'replaceText' => $url
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllText' => array(
+                'containsText' => array(
+                    'text' => '{{date}}',
+                    'matchCase' => true
+                ),
+                'replaceText' => date('F Y')
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllText' => array(
+                'containsText' => array(
+                    'text' => '{{uniqueVisitors}}',
+                    'matchCase' => true
+                ),
+                'replaceText' => $uniqueVisitors
             )
         ));
         $requests[] = new \Google_Service_Slides_Request(array(
