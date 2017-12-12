@@ -9,7 +9,6 @@ use Symfony\Component\DomCrawler\Crawler as DomCrawler;
 
 class APIController extends BaseController
 {
-    protected $viewsXPath=".engagementInfo-valueNumber";
 
     public function getSWMetrics(Request $request)
     {
@@ -28,9 +27,13 @@ class APIController extends BaseController
         $client->setClient($guzzleClient);
         $client->setHeader('User-Agent', "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
         $crawler = $client->request('GET', 'https://www.similarweb.com/fr/website/'.$url);
-        $nbViews=$crawler->filter($this->viewsXPath)->first()->text();
+        $averageVisits=$crawler->filter(".engagementInfo-valueNumber")->first()->text();
+        $screenShotUrl=$crawler->filter(".stickyHeader-screenshot")->first()->attr("src");
+        $averagePages=$crawler->filter(".engagementInfo-value .engagementInfo-valueNumber")->eq(2)->text();
         return response()->json([
-            "nbViews" => $nbViews,
+            "averageVisits" => $averageVisits,
+            "averagePagesPerVisit" => $averagePages,
+            "screenShotUrl" => $screenShotUrl,
         ]);
     }
 
