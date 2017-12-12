@@ -43,6 +43,7 @@ $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     $app->get('/resource/{namespace}/{path:.*}', "ResourceController@resolve");
     $app->get('/api/get-sw-metrics', "APIController@getSWMetrics");
     $app->get('/api/get-report', "APIController@getReport");
+    $app->get('/api/test', "APIController@testUpdate");
     $app->get('/{path:.*}', "FrontController@render");
 });
 

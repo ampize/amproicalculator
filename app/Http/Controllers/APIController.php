@@ -63,11 +63,6 @@ class APIController extends BaseController
         $spreadSheetModelId = "1HqEblVk-6pCX8caa90zL6uVOYDepC792Mh76TI1OcXA";
         $slidesModelId ="1ACrSlNHwX-S-wPG5NP-ZHjRDRR4etEdlUd-9f0AXRDo";
         $driveService = new \Google_Service_Drive($client);
-
-        $copiedFile = new \Google_Service_Drive_DriveFile();
-        $copiedFile->setName('AMP economic impact on '.$url);
-        $newFile=$driveService->files->copy($spreadSheetModelId, $copiedFile);
-        $newId=$newFile->getId();
         $body= new \Google_Service_Sheets_ValueRange([
             'values' => [
                 [
@@ -80,14 +75,14 @@ class APIController extends BaseController
             ]
         ]);
         $range = 'C3:C5';
-        $sheetsService->spreadsheets_values->update($newId, $range,
+        $sheetsService->spreadsheets_values->update($spreadSheetModelId, $range,
             $body,[
                 'valueInputOption' => 'USER_ENTERED'
             ]);
 
-        $copiedFile2 = new \Google_Service_Drive_DriveFile();
-        $copiedFile2->setName('AMP ROI on '.$url);
-        $newFile2=$driveService->files->copy($slidesModelId, $copiedFile2);
+        $copiedFile = new \Google_Service_Drive_DriveFile();
+        $copiedFile->setName('AMP ROI on '.$url);
+        $newFile2=$driveService->files->copy($slidesModelId, $copiedFile);
         $newSlidesId=$newFile2->getId();
         $requests = array();
         $requests[] = new \Google_Service_Slides_Request(array(
@@ -99,13 +94,44 @@ class APIController extends BaseController
                 'replaceText' => $url
             )
         ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'refreshSheetsChart' => array(
+                'objectId' => "g2a46cec464_0_2"
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'refreshSheetsChart' => array(
+                'objectId' => "g2a46cec464_0_3"
+            )
+        ));
         $batchUpdateRequest = new \Google_Service_Slides_BatchUpdatePresentationRequest(array(
             'requests' => $requests
         ));
         $slidesService->presentations->batchUpdate($newSlidesId, $batchUpdateRequest);
         die("ok");
+    }
 
-
-
+    public function testUpdate(Request $request)
+    {
+        $client=new \Google_Client();
+        $client->setApplicationName("AMPROICalculator");
+        $client->setScopes(implode(' ', array(
+                \Google_Service_Sheets::SPREADSHEETS,\Google_Service_Slides::PRESENTATIONS)
+        ));
+        $client->setAuthConfig(realpath(__DIR__.'/../../../client_secret.json'));
+        $client->setAccessType('offline');
+        $credentialsPath=realpath(__DIR__.'/../../../credentials/credentials.json');
+        $accessToken = json_decode(file_get_contents($credentialsPath), true);
+        $client->setAccessToken($accessToken);
+        if ($client->isAccessTokenExpired()) {
+            $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+            file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
+        }
+        $sheetsService = new \Google_Service_Sheets($client);
+        $slidesService = new \Google_Service_Slides($client);
+        $driveService = new \Google_Service_Drive($client);
+        $slidesId="1AAOt40oGZfwWGFvt88lUf4t76mL47rltto4IiUTkMpg";
+        $slides=$slidesService->presentations->get($slidesId);
+        return response()->json($slides->toSimpleObject());
     }
 }
