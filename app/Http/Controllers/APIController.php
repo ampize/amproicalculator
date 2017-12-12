@@ -30,9 +30,16 @@ class APIController extends BaseController
         $averageVisits=$crawler->filter(".engagementInfo-valueNumber")->first()->text();
         $screenShotUrl=$crawler->filter(".stickyHeader-screenshot")->first()->attr("src");
         $averagePages=$crawler->filter(".engagementInfo-value .engagementInfo-valueNumber")->eq(2)->text();
+        $multiplier=1;
+        if(strpos($averageVisits,"M")!==false){
+            $multiplier=1000000;
+        } else if(strpos($averageVisits,"K")!==false){
+            $multiplier=1000;
+        }
+        $averageVisits=floatval($averageVisits)*$multiplier;
         return response()->json([
             "averageVisits" => $averageVisits,
-            "averagePagesPerVisit" => $averagePages,
+            "averagePagesPerVisit" => str_replace('.',',',$averagePages),
             "screenShotUrl" => $screenShotUrl,
         ]);
     }
