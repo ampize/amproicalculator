@@ -108,7 +108,13 @@ class APIController extends BaseController
             'requests' => $requests
         ));
         $slidesService->presentations->batchUpdate($newSlidesId, $batchUpdateRequest);
-        die("ok");
+        $export = $driveService->files->export($newSlidesId, 'application/pdf', array(
+            'alt' => 'media'));
+        $content = $export->getBody()->getContents();
+        return response($content)
+            ->withHeaders([
+                'Content-Type' => 'application/pdf',
+            ]);
     }
 
     public function testUpdate(Request $request)
