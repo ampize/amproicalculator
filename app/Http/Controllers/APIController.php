@@ -10,6 +10,40 @@ use Symfony\Component\DomCrawler\Crawler as DomCrawler;
 class APIController extends BaseController
 {
 
+    public function getSWMetrics(Request $request)
+    {
+        $url = $request->input("url", null);
+        if (empty($url)) {
+            abort(400, "Missing required params");
+        }
+        $client = new GoutteClient();
+        $client->followRedirects();
+        $guzzleClient = new \GuzzleHttp\Client(array(
+            'curl' => array(
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_SSL_VERIFYPEER => false,
+            ),
+        ));
+        $client->setClient($guzzleClient);
+        $client->setHeader('User-Agent', "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
+        $crawler = $client->request('GET', 'https://www.similarweb.com/fr/website/'.$url);
+        $averageVisits=$crawler->filter(".engagementInfo-valueNumber")->first()->text();
+        $screenShotUrl=$crawler->filter(".stickyHeader-screenshot")->first()->attr("src");
+        $averagePages=$crawler->filter(".engagementInfo-value .engagementInfo-valueNumber")->eq(2)->text();
+        $multiplier=1;
+        if(strpos($averageVisits,"M")!==false){
+            $multiplier=1000000;
+        } else if(strpos($averageVisits,"K")!==false){
+            $multiplier=1000;
+        }
+        $averageVisits=floatval($averageVisits)*$multiplier;
+        return response()->json([
+            "averageVisits" => $averageVisits,
+            "averagePagesPerVisit" => str_replace('.',',',$averagePages),
+            "screenShotUrl" => $screenShotUrl,
+        ]);
+    }
+
     public function getReport(Request $request)
     {
         $url = $request->input("url", null);
@@ -170,5 +204,29 @@ class APIController extends BaseController
             ->withHeaders([
                 'Content-Type' => 'application/pdf',
             ]);
+    }
+
+    public function testUpdate(Request $request)
+    {
+        $client=new \Google_Client();
+        $client->setApplicationName("AMPROICalculator");
+        $client->setScopes(implode(' ', array(
+                \Google_Service_Sheets::SPREADSHEETS,\Google_Service_Slides::PRESENTATIONS)
+        ));
+        $client->setAuthConfig(realpath(__DIR__.'/../../../client_secret.json'));
+        $client->setAccessType('offline');
+        $credentialsPath=realpath(__DIR__.'/../../../credentials/credentials.json');
+        $accessToken = json_decode(file_get_contents($credentialsPath), true);
+        $client->setAccessToken($accessToken);
+        if ($client->isAccessTokenExpired()) {
+            $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+            file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
+        }
+        $sheetsService = new \Google_Service_Sheets($client);
+        $slidesService = new \Google_Service_Slides($client);
+        $driveService = new \Google_Service_Drive($client);
+        $slidesId="1ACrSlNHwX-S-wPG5NP-ZHjRDRR4etEdlUd-9f0AXRDo";
+        $slides=$slidesService->presentations->get($slidesId);
+        return response()->json($slides->toSimpleObject());
     }
 }
