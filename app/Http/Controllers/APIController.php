@@ -125,6 +125,12 @@ class APIController extends BaseController
         $copiedFile->setName('AMP ROI on '.$url);
         $newFile2=$driveService->files->copy($slidesModelId, $copiedFile);
         $newSlidesId=$newFile2->getId();
+        $rezRanges=[
+            "'Cash Flow Table (Risk-Adjusted)'!G5",
+            "'Cash Flow Table (Risk-Adjusted)'!G32",
+            "'Cash Flow Table (Risk-Adjusted)'!G31",
+        ];
+        $newValues=$sheetsService->spreadsheets_values->batchGet($spreadSheetModelId,["ranges"=>$rezRanges]);
         $requests = array();
         $requests[] = new \Google_Service_Slides_Request(array(
             'replaceAllText' => array(
@@ -151,6 +157,33 @@ class APIController extends BaseController
                     'matchCase' => true
                 ),
                 'replaceText' => $uniqueVisitors
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllText' => array(
+                'containsText' => array(
+                    'text' => '{{roi1}}',
+                    'matchCase' => true
+                ),
+                'replaceText' => $newValues->getValueRanges()[0]->getValues()[0][0]
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllText' => array(
+                'containsText' => array(
+                    'text' => '{{roi2}}',
+                    'matchCase' => true
+                ),
+                'replaceText' => $newValues->getValueRanges()[1]->getValues()[0][0]
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllText' => array(
+                'containsText' => array(
+                    'text' => '{{benefitsPV}}',
+                    'matchCase' => true
+                ),
+                'replaceText' => $newValues->getValueRanges()[2]->getValues()[0][0]
             )
         ));
         $requests[] = new \Google_Service_Slides_Request(array(
@@ -226,7 +259,14 @@ class APIController extends BaseController
         $slidesService = new \Google_Service_Slides($client);
         $driveService = new \Google_Service_Drive($client);
         $slidesId="1ACrSlNHwX-S-wPG5NP-ZHjRDRR4etEdlUd-9f0AXRDo";
-        $slides=$slidesService->presentations->get($slidesId);
-        return response()->json($slides->toSimpleObject());
+        $spreadSheetModelId = "1HqEblVk-6pCX8caa90zL6uVOYDepC792Mh76TI1OcXA";
+        $rezRanges=[
+            "'Cash Flow Table (Risk-Adjusted)'!G5",
+            "'Cash Flow Table (Risk-Adjusted)'!G32",
+            "'Cash Flow Table (Risk-Adjusted)'!G31",
+        ];
+        $values=$sheetsService->spreadsheets_values->batchGet($spreadSheetModelId,["ranges"=>$rezRanges]);
+        var_dump($values->getValueRanges()[1]->getValues()[0][0]);
+        die;
     }
 }
