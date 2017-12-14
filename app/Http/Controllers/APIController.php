@@ -230,13 +230,16 @@ class APIController extends BaseController
             'requests' => $requests
         ));
         $slidesService->presentations->batchUpdate($newSlidesId, $batchUpdateRequest);
-        $export = $driveService->files->export($newSlidesId, 'application/pdf', array(
-            'alt' => 'media'));
-        $content = $export->getBody()->getContents();
-        return response($content)
-            ->withHeaders([
-                'Content-Type' => 'application/pdf',
-            ]);
+        $pub=$driveService->revisions->update($newSlidesId,1,new \Google_Service_Drive_Revision(["published"=>true,"publishAuto"=>true]));
+        var_dump($pub);
+        die("ok");
+//        $export = $driveService->files->export($newSlidesId, 'application/pdf', array(
+//            'alt' => 'media'));
+//        $content = $export->getBody()->getContents();
+//        return response($content)
+//            ->withHeaders([
+//                'Content-Type' => 'application/pdf',
+//            ]);
     }
 
     public function testUpdate(Request $request)
