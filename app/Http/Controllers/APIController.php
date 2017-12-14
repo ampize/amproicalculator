@@ -12,13 +12,9 @@ class APIController extends BaseController
 
     public function getReport(Request $request)
     {
-        $email = $request->input("email", null);
         $url = $request->input("url", null);
-        if (empty($url)||empty($email)) {
+        if (empty($url)) {
             abort(400, "Missing required params");
-        }
-        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-            abort(400, "Invalid email");
         }
         $client = new GoutteClient();
         $client->followRedirects();
@@ -34,6 +30,10 @@ class APIController extends BaseController
         $averageVisits=$crawler->filter(".engagementInfo-valueNumber")->first()->text();
         $screenShotUrl=$crawler->filter(".stickyHeader-screenshot")->first()->attr("src");
         $averagePages=$crawler->filter(".engagementInfo-value .engagementInfo-valueNumber")->eq(2)->text();
+
+        if(empty($averageVisits)||empty($averagePages)||empty($screenShotUrl)){
+            abort(500, "No data found on website");
+        }
         $multiplier=1;
         if(strpos($averageVisits,"M")!==false){
             $multiplier=1000000;
@@ -48,7 +48,7 @@ class APIController extends BaseController
         $uniqueVisitors=(string) $uniqueVisitors;
         $averagePages=str_replace('.',',',$averagePages);
 
-        if (empty($email)||empty($uniqueVisitors)||empty($averageVisits)||empty($averagePages)||empty($url)) {
+        if (empty($uniqueVisitors)||empty($averageVisits)||empty($averagePages)||empty($url)) {
             abort(400, "Missing required params");
         }
         $client=new \Google_Client();
