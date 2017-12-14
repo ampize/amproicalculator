@@ -48,9 +48,40 @@ class APIController extends BaseController
     {
         $email = $request->input("email", null);
         $url = $request->input("url", null);
-        $uniqueVisitors = $request->input("uniqueVisitors", null);
-        $averageVisits = $request->input("averageVisits", null);
-        $averagePages = $request->input("averagePages", null);
+        if (empty($url)||empty($email)) {
+            abort(400, "Missing required params");
+        }
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+            abort(400, "Invalid email");
+        }
+        $client = new GoutteClient();
+        $client->followRedirects();
+        $guzzleClient = new \GuzzleHttp\Client(array(
+            'curl' => array(
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_SSL_VERIFYPEER => false,
+            ),
+        ));
+        $client->setClient($guzzleClient);
+        $client->setHeader('User-Agent', "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
+        $crawler = $client->request('GET', 'https://www.similarweb.com/fr/website/'.$url);
+        $averageVisits=$crawler->filter(".engagementInfo-valueNumber")->first()->text();
+        $screenShotUrl=$crawler->filter(".stickyHeader-screenshot")->first()->attr("src");
+        $averagePages=$crawler->filter(".engagementInfo-value .engagementInfo-valueNumber")->eq(2)->text();
+        $multiplier=1;
+        if(strpos($averageVisits,"M")!==false){
+            $multiplier=1000000;
+        } else if(strpos($averageVisits,"K")!==false){
+            $multiplier=1000;
+        }
+        $averageVisits=floatval($averageVisits)*$multiplier;
+
+        $uniqueVisitors = intval($averageVisits/$averagePages);
+        $averagePages=(string) $averagePages;
+        $averageVisits=(string) $averageVisits;
+        $uniqueVisitors=(string) $uniqueVisitors;
+        $averagePages=str_replace('.',',',$averagePages);
+
         if (empty($email)||empty($uniqueVisitors)||empty($averageVisits)||empty($averagePages)||empty($url)) {
             abort(400, "Missing required params");
         }
