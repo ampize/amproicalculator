@@ -231,8 +231,11 @@ class APIController extends BaseController
         ));
         $slidesService->presentations->batchUpdate($newSlidesId, $batchUpdateRequest);
         $pub=$driveService->revisions->update($newSlidesId,1,new \Google_Service_Drive_Revision(["published"=>true,"publishAuto"=>true]));
-        var_dump($pub);
-        die("ok");
+        return response()->json([
+            "id" => $newSlidesId,
+            "success"=>true
+
+        ]);
 //        $export = $driveService->files->export($newSlidesId, 'application/pdf', array(
 //            'alt' => 'media'));
 //        $content = $export->getBody()->getContents();
