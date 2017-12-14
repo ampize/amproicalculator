@@ -154,6 +154,16 @@ class APIController extends BaseController
             )
         ));
         $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllShapesWithImage' => array(
+                'imageUrl' => $screenShotUrl,
+                'replaceMethod' => 'CENTER_CROP',
+                'containsText' => array(
+                    'text' => '{{site-screenshot}}',
+                    'matchCase' => true
+                )
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
             'refreshSheetsChart' => array(
                 'objectId' => "g2a46cec464_0_2"
             )
