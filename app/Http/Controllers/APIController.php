@@ -100,6 +100,10 @@ class APIController extends BaseController
             "'Cash Flow Table (Risk-Adjusted)'!G5",
             "'Cash Flow Table (Risk-Adjusted)'!G32",
             "'Cash Flow Table (Risk-Adjusted)'!G31",
+            "'Profit Growth From Increased Conversion Rate'!E6",
+            "'Profit Growth From Increased AMP Site Traffic'!E7",
+            "'Metrics'!C3",
+            "'Metrics'!C6",
         ];
         $newValues=$sheetsService->spreadsheets_values->batchGet($spreadSheetModelId,["ranges"=>$rezRanges]);
         $requests = array();
@@ -119,15 +123,6 @@ class APIController extends BaseController
                     'matchCase' => true
                 ),
                 'replaceText' => date('F Y')
-            )
-        ));
-        $requests[] = new \Google_Service_Slides_Request(array(
-            'replaceAllText' => array(
-                'containsText' => array(
-                    'text' => '{{uniqueVisitors}}',
-                    'matchCase' => true
-                ),
-                'replaceText' => $uniqueVisitors
             )
         ));
         $requests[] = new \Google_Service_Slides_Request(array(
@@ -155,6 +150,42 @@ class APIController extends BaseController
                     'matchCase' => true
                 ),
                 'replaceText' => $newValues->getValueRanges()[2]->getValues()[0][0]
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllText' => array(
+                'containsText' => array(
+                    'text' => '{{PV1}}',
+                    'matchCase' => true
+                ),
+                'replaceText' => $newValues->getValueRanges()[3]->getValues()[0][0]
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllText' => array(
+                'containsText' => array(
+                    'text' => '{{PV2}}',
+                    'matchCase' => true
+                ),
+                'replaceText' => $newValues->getValueRanges()[4]->getValues()[0][0]
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllText' => array(
+                'containsText' => array(
+                    'text' => '{{uniqueVisitors}}',
+                    'matchCase' => true
+                ),
+                'replaceText' => $newValues->getValueRanges()[5]->getValues()[0][0]
+            )
+        ));
+        $requests[] = new \Google_Service_Slides_Request(array(
+            'replaceAllText' => array(
+                'containsText' => array(
+                    'text' => '{{percentageAmp}}',
+                    'matchCase' => true
+                ),
+                'replaceText' => $newValues->getValueRanges()[6]->getValues()[0][0]
             )
         ));
         $requests[] = new \Google_Service_Slides_Request(array(
