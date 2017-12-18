@@ -10,30 +10,35 @@ use Symfony\Component\DomCrawler\Crawler as DomCrawler;
 class APIController extends BaseController
 {
 
-    protected $client=null;
+    protected $client = null;
 
-    protected function getClient(){
-        if(!$this->client){
-            $client=new \Google_Client();
+    protected function getClient()
+    {
+        if (!$this->client) {
+            $client = new \Google_Client();
             $client->setApplicationName("AMPROICalculator");
             $client->setScopes(implode(' ', array(
-                    \Google_Service_Sheets::SPREADSHEETS,\Google_Service_Slides::PRESENTATIONS)
+                    \Google_Service_Sheets::SPREADSHEETS, \Google_Service_Slides::PRESENTATIONS)
             ));
-            $client->setAuthConfig(realpath(__DIR__.'/../../../client_secret.json'));
+            $client->setAuthConfig(realpath(__DIR__ . '/../../../client_secret.json'));
             $client->setAccessType('offline');
-            $credentialsPath=realpath(__DIR__.'/../../../credentials/credentials.json');
+            $credentialsPath = realpath(__DIR__ . '/../../../credentials/credentials.json');
             $accessToken = json_decode(file_get_contents($credentialsPath), true);
             $client->setAccessToken($accessToken);
             if ($client->isAccessTokenExpired()) {
                 $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
                 file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
             }
-            $this->client=$client;
+            $this->client = $client;
         }
         return $this->client;
     }
 
-    protected function generateReport($url){
+    protected function generateReport($url, $averagePages = null, $averageVisits = null, $uniqueVisitors = null)
+    {
+        if (empty($url)) {
+            abort(400, "Missing required params");
+        }
         $gClient = new GoutteClient();
         $gClient->followRedirects();
         $guzzleClient = new \GuzzleHttp\Client(array(
@@ -44,59 +49,61 @@ class APIController extends BaseController
         ));
         $gClient->setClient($guzzleClient);
         $gClient->setHeader('User-Agent', "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
-        $crawler = $gClient->request('GET', 'https://www.similarweb.com/fr/website/'.$url);
-        $averageVisits=$crawler->filter(".engagementInfo-valueNumber")->first()->text();
-        $screenShotUrl=$crawler->filter(".stickyHeader-screenshot")->first()->attr("src");
-        $averagePages=$crawler->filter(".engagementInfo-value .engagementInfo-valueNumber")->eq(2)->text();
+        $crawler = $gClient->request('GET', 'https://www.similarweb.com/fr/website/' . $url);
+        $screenShotUrl = $crawler->filter(".stickyHeader-screenshot")->first()->attr("src");
 
-        if(empty($averageVisits)||empty($averagePages)||empty($screenShotUrl)){
-            abort(500, "No data found on website");
+        if (empty($uniqueVisitors) || empty($averageVisits) || empty($averagePages)) {
+            $averageVisits = $crawler->filter(".engagementInfo-valueNumber")->first()->text();
+            $averagePages = $crawler->filter(".engagementInfo-value .engagementInfo-valueNumber")->eq(2)->text();
+
+            if (empty($averageVisits) || empty($averagePages) || empty($screenShotUrl)) {
+                abort(500, "No data found on website");
+            }
+            $multiplier = 1;
+            if (strpos($averageVisits, "M") !== false) {
+                $multiplier = 1000000;
+            } else if (strpos($averageVisits, "K") !== false) {
+                $multiplier = 1000;
+            }
+            $averageVisits = floatval($averageVisits) * $multiplier;
+
+            $uniqueVisitors = intval($averageVisits / $averagePages);
+            $averagePages = (string)$averagePages;
+            $averageVisits = (string)$averageVisits;
+            $uniqueVisitors = (string)$uniqueVisitors;
+            $averagePages = str_replace('.', ',', $averagePages);
         }
-        $multiplier=1;
-        if(strpos($averageVisits,"M")!==false){
-            $multiplier=1000000;
-        } else if(strpos($averageVisits,"K")!==false){
-            $multiplier=1000;
-        }
-        $averageVisits=floatval($averageVisits)*$multiplier;
-
-        $uniqueVisitors = intval($averageVisits/$averagePages);
-        $averagePages=(string) $averagePages;
-        $averageVisits=(string) $averageVisits;
-        $uniqueVisitors=(string) $uniqueVisitors;
-        $averagePages=str_replace('.',',',$averagePages);
-
-        if (empty($uniqueVisitors)||empty($averageVisits)||empty($averagePages)||empty($url)) {
+        if (empty($uniqueVisitors) || empty($averageVisits) || empty($averagePages)) {
             abort(400, "Missing required params");
         }
-        $client=$this->getClient();
+        $client = $this->getClient();
         $sheetsService = new \Google_Service_Sheets($client);
         $slidesService = new \Google_Service_Slides($client);
         $spreadSheetModelId = "1HqEblVk-6pCX8caa90zL6uVOYDepC792Mh76TI1OcXA";
-        $slidesModelId ="1ACrSlNHwX-S-wPG5NP-ZHjRDRR4etEdlUd-9f0AXRDo";
+        $slidesModelId = "1ACrSlNHwX-S-wPG5NP-ZHjRDRR4etEdlUd-9f0AXRDo";
         $driveService = new \Google_Service_Drive($client);
-        $body= new \Google_Service_Sheets_ValueRange([
+        $body = new \Google_Service_Sheets_ValueRange([
             'values' => [
                 [
                     $uniqueVisitors
-                ],[
+                ], [
                     $averageVisits
-                ],[
+                ], [
                     $averagePages
                 ]
             ]
         ]);
         $range = 'C3:C5';
         $sheetsService->spreadsheets_values->update($spreadSheetModelId, $range,
-            $body,[
+            $body, [
                 'valueInputOption' => 'USER_ENTERED'
             ]);
 
         $copiedFile = new \Google_Service_Drive_DriveFile();
-        $copiedFile->setName('AMP ROI on '.$url);
-        $newFile2=$driveService->files->copy($slidesModelId, $copiedFile);
-        $newSlidesId=$newFile2->getId();
-        $rezRanges=[
+        $copiedFile->setName('AMP ROI on ' . $url);
+        $newFile2 = $driveService->files->copy($slidesModelId, $copiedFile);
+        $newSlidesId = $newFile2->getId();
+        $rezRanges = [
             "'Cash Flow Table (Risk-Adjusted)'!G5",
             "'Cash Flow Table (Risk-Adjusted)'!G32",
             "'Cash Flow Table (Risk-Adjusted)'!G31",
@@ -105,7 +112,7 @@ class APIController extends BaseController
             "'Metrics'!C3",
             "'Metrics'!C6",
         ];
-        $newValues=$sheetsService->spreadsheets_values->batchGet($spreadSheetModelId,["ranges"=>$rezRanges]);
+        $newValues = $sheetsService->spreadsheets_values->batchGet($spreadSheetModelId, ["ranges" => $rezRanges]);
         $requests = array();
         $requests[] = new \Google_Service_Slides_Request(array(
             'replaceAllText' => array(
@@ -232,17 +239,18 @@ class APIController extends BaseController
             'requests' => $requests
         ));
         $slidesService->presentations->batchUpdate($newSlidesId, $batchUpdateRequest);
-        $pub=$driveService->revisions->update($newSlidesId,1,new \Google_Service_Drive_Revision(["published"=>true,"publishAuto"=>true]));
+        $pub = $driveService->revisions->update($newSlidesId, 1, new \Google_Service_Drive_Revision(["published" => true, "publishAuto" => true]));
         return $newSlidesId;
     }
 
-    protected function hasReport($url){
-        $client=$this->getClient();
+    protected function hasReport($url)
+    {
+        $client = $this->getClient();
         $driveService = new \Google_Service_Drive($client);
-        $files=$driveService->files->listFiles([
-            "q"=>"name='AMP ROI on ".$url."'"
+        $files = $driveService->files->listFiles([
+            "q" => "name='AMP ROI on " . $url . "'"
         ]);
-        if(!empty($files->files)&&!empty($files->files[0])){
+        if (!empty($files->files) && !empty($files->files[0])) {
             return $files->files[0]->id;
         }
         return null;
@@ -252,16 +260,19 @@ class APIController extends BaseController
     public function getReport(Request $request)
     {
         $url = $request->input("url", null);
+        $averagePages = $request->input("pageviewsPerSession", null);
+        $averageVisits = $request->input("pageViews", null);
+        $uniqueVisitors = $request->input("users", null);
         if (empty($url)) {
             abort(400, "Missing required params");
         }
-        $reportId=$this->hasReport($url);
-        if(!$reportId){
-            $reportId=$this->generateReport($url);
+        $reportId = $this->hasReport($url);
+        if (!$reportId) {
+            $reportId = $this->generateReport($url, $averagePages, $averageVisits, $uniqueVisitors);
         }
         return response()->json([
             "id" => $reportId,
-            "success"=>true
+            "success" => true
 
         ]);
     }
@@ -272,11 +283,11 @@ class APIController extends BaseController
         if (empty($url)) {
             abort(400, "Missing required params");
         }
-        $reportId=$this->hasReport($url);
-        if(!$reportId){
-            $reportId=$this->generateReport($url);
+        $reportId = $this->hasReport($url);
+        if (!$reportId) {
+            abort(404, "Report not found");
         }
-        $client=$this->getClient();
+        $client = $this->getClient();
         $driveService = new \Google_Service_Drive($client);
         $export = $driveService->files->export($reportId, 'application/pdf', array(
             'alt' => 'media'));
@@ -288,15 +299,13 @@ class APIController extends BaseController
     }
 
 
-
-
     public function testUpdate(Request $request)
     {
         $url = $request->input("url", null);
         if (empty($url)) {
             abort(400, "Missing required params");
         }
-        var_dump( $this->hasReport($url));
+        var_dump($this->hasReport($url));
         die("test");
 
     }

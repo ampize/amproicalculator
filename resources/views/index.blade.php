@@ -22,6 +22,7 @@
                 me.hasPreview=false;
                 me.previewId=null;
                 me.isLoading=false;
+                me.hasAnalytics=false;
                 me.authorizeGa=function(){
                     gapi.analytics.auth.authorize({
                         container: 'embed-api-auth-container',
@@ -32,7 +33,18 @@
                     });
                     viewSelector.execute();
                     viewSelector.on('change', function(ids) {
-                        console.log(ids);
+                        me.hasAnalytics=false;
+                        gapi.client.analytics.data.ga.get({
+                            'ids': ids,
+                            'start-date': '30daysAgo',
+                            'end-date': 'today',
+                            'metrics': 'ga:users,ga:pageviews,ga:pageviewsPerSession'
+                        }).then(function(res){
+                            console.log(res.result);
+                            me.hasAnalytics=true;
+                            me.analyticsData=res.result.totalsForAllResults;
+                            $scope.$apply();
+                        });
                     });
                 };
 
@@ -48,7 +60,21 @@
                             }
                         );
                     }
-                }
+                };
+
+                me.submitWithAnalytics=function(){
+                    me.isLoading=true;
+                    if(me.url&&me.url!==""){
+                        $http.get("/api/get-report?pageViews="+me.analyticsData["ga:pageviews"]+"&users="+me.analyticsData["ga:users"]+"&pageviewsPerSession="+me.analyticsData["ga:pageviewsPerSession"].replace('.',',')+"&url="+me.url).then(
+                            function(response){
+                                console.log(response);
+                                me.isLoading=false;
+                                me.previewUrl=$sce.trustAsResourceUrl('https://docs.google.com/presentation/d/'+response.data.id+'/embed?start=false&loop=false&delayms=3000');
+                                me.hasPreview=true;
+                            }
+                        );
+                    }
+                };
 
             }]);
         })();
@@ -60,7 +86,8 @@
 <div id="view-selector-container"></div>
 <input type="text" ng-model="ARC.url">
 <button ng-click="ARC.submit()" ng-disabled="ARC.isLoading">Preview report</button>
-<button ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading">Auth GA</button>
+<button ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Preview report with analytics</button>
+<button ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Auth GA</button>
 <iframe ng-if="ARC.hasPreview" ng-src="{{ARC.previewUrl}}" frameborder="0" width="480" height="299"></iframe>
 
 
