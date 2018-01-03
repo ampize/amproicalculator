@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>AMPROICalculator</title>
+    <base href="/">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script>
         (function(w,d,s,g,js,fs){
@@ -15,10 +16,18 @@
     <script>
         (function(){
             var app = angular.module('amproicalculator', []);
-            app.controller("ARCController",["$scope","$http","$sce",function($scope,$http,$sce){
+            app.config(['$locationProvider',
+                function( $locationProvider) {
+                    $locationProvider.html5Mode(true);
+                }]);
+            app.controller("ARCController",["$scope","$http","$sce","$location",function($scope,$http,$sce,$location){
                 var me=this;
                 me.clientId="295074954994-61se8nkehuupnjet2b5cki2s7ulr9kql.apps.googleusercontent.com";
                 me.url=null;
+                var existingUrl=$location.search().url;
+                if(existingUrl&&existingUrl!=""){
+                    me.url=existingUrl;
+                }
                 me.hasPreview=false;
                 me.previewId=null;
                 me.isLoading=false;
@@ -51,7 +60,9 @@
                 me.submit=function(){
                     me.isLoading=true;
                     if(me.url&&me.url!==""){
-                        $http.get("/api/get-report?url="+me.url).then(
+                        var turl=me.url.replace('https://','');
+                        turl=turl.replace('http://','');
+                        $http.get("/api/get-report?url="+turl).then(
                             function(response){
                                 console.log(response);
                                 me.isLoading=false;
@@ -65,7 +76,9 @@
                 me.submitWithAnalytics=function(){
                     me.isLoading=true;
                     if(me.url&&me.url!==""){
-                        $http.get("/api/get-report?pageViews="+me.analyticsData["ga:pageviews"]+"&users="+me.analyticsData["ga:users"]+"&pageviewsPerSession="+me.analyticsData["ga:pageviewsPerSession"].replace('.',',')+"&url="+me.url).then(
+                        var turl=me.url.replace('https://','');
+                        turl=turl.replace('http://','');
+                        $http.get("/api/get-report?pageViews="+me.analyticsData["ga:pageviews"]+"&users="+me.analyticsData["ga:users"]+"&pageviewsPerSession="+me.analyticsData["ga:pageviewsPerSession"].replace('.',',')+"&url="+turl).then(
                             function(response){
                                 console.log(response);
                                 me.isLoading=false;
