@@ -2,16 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-    <meta property="og:description" content="AMP ROI calculator for publishers and retailers">
-    <meta name="description" content="AMP ROI calculator for publishers and retailers">
-    <title>AMP ROI calculator for publishers and retailers</title>
+    <title>AMPROICalculator</title>
     <base href="/">
-    <link rel="shortcut icon" href="/resource/default/img/favicon.png">
-    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400" rel="stylesheet">
-    <link rel="stylesheet" href="/resource/default/css/basscss.min.css" type="text/css">
-    <link rel="stylesheet" href="/resource/default/css/styles.css" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script>
         (function(w,d,s,g,js,fs){
@@ -103,23 +95,6 @@
     </script>
 </head>
 <body ng-app="amproicalculator" ng-controller="ARCController as ARC" >
-
-<header class="ampize-header">
-    <div class="md-col-10 mx-auto px2">
-        <div class="ampize-nav-left flex">
-            <a href="/" class="ampize-menu-logo">
-                <svg width="130px" height="100%" viewBox="3 -8 275 63" version="1.1" xmlns="http:/www.w3.org/2000/svg" xmlns:xlink="http:/www.w3.org/1999/xlink">
-                    <text stroke="none" fill="none" font-size="52.4903461" font-weight="bold">
-                        <tspan x="3.03326649" y="43.12557" fill="#EF5425">AMP</tspan>
-                        <tspan x="115.858894" y="43.12557" fill="#F5B718">ize</tspan>
-                        <tspan x="180.011342" y="43.12557" fill="#329F92">.me</tspan>
-                    </text>
-                </svg>
-            </a>
-        </div>
-    </div>
-</header>
-
 <div id="embed-api-auth-container"></div>
 <div id="view-selector-container"></div>
 <input type="text" ng-model="ARC.url">
