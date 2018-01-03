@@ -50,7 +50,8 @@ class APIController extends BaseController
         $gClient->setClient($guzzleClient);
         $gClient->setHeader('User-Agent', "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
         $crawler = $gClient->request('GET', 'https://www.similarweb.com/fr/website/' . $url);
-        $screenShotUrl = $crawler->filter(".stickyHeader-screenshot")->first()->attr("src");
+
+        $screenShotUrl = $crawler->filter(".websiteHeader-screenImg")->first()->attr("src");
 
         if (empty($uniqueVisitors) || empty($averageVisits) || empty($averagePages)) {
             $averageVisits = $crawler->filter(".engagementInfo-valueNumber")->first()->text();
