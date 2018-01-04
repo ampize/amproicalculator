@@ -131,7 +131,7 @@
                     <div id="embed-api-auth-container"></div>
                     <div id="view-selector-container"></div>
                 </div>
-                <div class="center">
+                <div class="center mt2">
                     <input type="url" class="input-url" ng-model="ARC.url" placeholder="http://" required>
                     <button class="submit-btn" ng-click="ARC.submit()" ng-disabled="ARC.isLoading">Estimate your ROI</button>
                     <button class="submit-btn" ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Estimate your ROI from real analytics</button>
