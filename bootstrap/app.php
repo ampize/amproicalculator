@@ -41,9 +41,9 @@ $app->singleton(
 
 $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     $app->get('/resource/{namespace}/{path:.*}', "ResourceController@resolve");
-    $app->get('/api/get-report', "APIController@getReport");
+    $app->post('/api/get-report', "APIController@getReport");
     $app->get('/api/dl-roi-report', "APIController@downloadReportPDF");
-    $app->get('/api/send-email', "APIController@sendReportEmail");
+    $app->post('/api/send-email', "APIController@sendReportEmail");
     $app->get('/api/test', "APIController@testUpdate");
     $app->get('/{path:.*}', "FrontController@render");
 });

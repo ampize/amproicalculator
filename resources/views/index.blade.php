@@ -32,6 +32,8 @@
                 var me=this;
                 me.clientId="295074954994-61se8nkehuupnjet2b5cki2s7ulr9kql.apps.googleusercontent.com";
                 me.url=null;
+                me.email=null;
+                me.turl=null;
                 var existingUrl=$location.search().url;
                 if(existingUrl&&existingUrl!=""){
                     me.url=existingUrl;
@@ -39,6 +41,7 @@
                 me.hasPreview=false;
                 me.previewId=null;
                 me.isLoading=false;
+                me.emailIsLoading=false;
                 me.hasAnalytics=false;
                 me.authorizeGa=function(){
                     gapi.analytics.auth.authorize({
@@ -66,13 +69,13 @@
                 };
 
                 me.submit=function(){
-                    me.isLoading=true;
                     if(me.url&&me.url!==""){
                         var turl=me.url.replace('https://','');
                         turl=turl.replace('http://','');
-                        $http.get("/api/get-report?url="+turl).then(
+                        me.turl=angular.copy(turl);
+                        me.isLoading=true;
+                        $http.post("/api/get-report?url="+turl).then(
                             function(response){
-                                console.log(response);
                                 me.isLoading=false;
                                 me.previewUrl=$sce.trustAsResourceUrl('https://docs.google.com/presentation/d/'+response.data.id+'/embed?start=false&loop=false&delayms=3000');
                                 me.hasPreview=true;
@@ -82,18 +85,24 @@
                 };
 
                 me.submitWithAnalytics=function(){
-                    me.isLoading=true;
                     if(me.url&&me.url!==""){
                         var turl=me.url.replace('https://','');
                         turl=turl.replace('http://','');
-                        $http.get("/api/get-report?pageViews="+me.analyticsData["ga:pageviews"]+"&users="+me.analyticsData["ga:users"]+"&pageviewsPerSession="+me.analyticsData["ga:pageviewsPerSession"].replace('.',',')+"&url="+turl).then(
+                        me.turl=angular.copy(turl);
+                        me.isLoading=true;
+                        $http.post("/api/get-report?pageViews="+me.analyticsData["ga:pageviews"]+"&users="+me.analyticsData["ga:users"]+"&pageviewsPerSession="+me.analyticsData["ga:pageviewsPerSession"].replace('.',',')+"&url="+turl).then(
                             function(response){
-                                console.log(response);
                                 me.isLoading=false;
                                 me.previewUrl=$sce.trustAsResourceUrl('https://docs.google.com/presentation/d/'+response.data.id+'/embed?start=false&loop=false&delayms=3000');
                                 me.hasPreview=true;
                             }
                         );
+                    }
+                };
+                me.sendEmail=function(){
+                    if(me.email&&me.email!==""&&me.turl){
+                        me.emailIsLoading=true;
+
                     }
                 };
 
@@ -131,18 +140,21 @@
                     <div id="embed-api-auth-container"></div>
                     <div id="view-selector-container"></div>
                 </div>
-                <div class="center mt2">
+                <form class="center mt2" name="mainForm">
                     <input type="url" class="input-url" ng-model="ARC.url" placeholder="http://" required>
-                    <button class="submit-btn" ng-click="ARC.submit()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Estimate your ROI</button>
-                    <button class="submit-btn" ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Estimate your ROI</button>
-                </div>
+                    <button type="submit" class="submit-btn" ng-click="ARC.submit()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Estimate your ROI</button>
+                    <button type="submit"  class="submit-btn" ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Estimate your ROI</button>
+                </form>
                 <div class="center mt2">
-                    <iframe ng-if="ARC.hasPreview" ng-src="{{ARC.previewUrl}}" frameborder="0" width="480" height="299"></iframe>
+                    <div ng-if="ARC.isLoading">
+                        Loading
+                    </div>
+                    <iframe ng-if="ARC.hasPreview&&!ARC.isLoading" ng-src="{{ARC.previewUrl}}" frameborder="0" width="480" height="299"></iframe>
                 </div>
-                <div class="center mt2" ng-if="ARC.hasPreview">
-                    <input type="email" class="input-url" placeholder="Your email" required>
-                    <a class="submit-btn" href="">Get Report as PDF</a>
-                </div>
+                <form class="center mt2" ng-if="ARC.hasPreview&&ARC.turl&&!ARC.isLoading" name="emailForm">
+                    <input type="email" class="input-url" ng-model="ARC.email" placeholder="Your email" required>
+                    <button type="submit"  class="submit-btn" ng-click="ARC.sendEmail()"  ng-disabled="ARC.emailIsLoading">Get Report as PDF</button>
+                </form>
         </div>
     </div>
 </div>
