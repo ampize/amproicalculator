@@ -124,12 +124,12 @@
         <div class="md-col-10 mx-auto mb4 home-hero">
                 <h1 class="center">AMP ROI Calculator</h1>
                 <p class="intro center">Learn what you could expect from shifting to AMP/PWA and using AMPize with our deep learning based ROI calculator</p>
-                <div id="embed-api-auth-container"></div>
-                <div id="view-selector-container"></div>
-                <div>
+                <div class="center">
                     <a href="" ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Get your real site metrics from Google Analytics</a>
+                    <div id="embed-api-auth-container"></div>
+                    <div id="view-selector-container"></div>
                 </div>
-                <div>
+                <div class="center">
                     <input type="url" class="input-url" ng-model="ARC.url" placeholder="http://" required>
                     <button class="submit-btn" ng-click="ARC.submit()" ng-disabled="ARC.isLoading">Estimate your ROI</button>
                     <button class="submit-btn" ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Estimate your ROI from real analytics</button>
