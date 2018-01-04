@@ -121,7 +121,7 @@
 </header>
 <div class="main">
     <div class="clearfix row">
-        <div class="md-col-10 mx-auto mb4 home-hero">
+        <div class="md-col-6 mx-auto mb4 home-hero">
                 <h1 class="center">AMP ROI Calculator</h1>
                 <p class="intro center">Learn what you could expect from shifting to AMP/PWA and using AMPize with our deep learning based ROI calculator</p>
                 <div class="center">
