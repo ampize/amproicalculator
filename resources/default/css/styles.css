@@ -1,3 +1,15 @@
+body {
+    margin: 0;
+    background: #fff;
+    line-height: 1.5rem;
+    font-family: "Lato", Arial, helvetica, sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+    min-width: 315px;
+    overflow-x: hidden;
+    font-smooth: always;
+    -webkit-font-smoothing: antialiased
+}
 .ampize-header {
     top: 0px;
     height: 80px;
