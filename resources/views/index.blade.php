@@ -57,7 +57,6 @@
                             'end-date': 'today',
                             'metrics': 'ga:users,ga:pageviews,ga:pageviewsPerSession'
                         }).then(function(res){
-                            console.log(res.result);
                             me.hasAnalytics=true;
                             me.analyticsData=res.result.totalsForAllResults;
                             me.url=angular.copy(document.getElementById(":1").innerText);
