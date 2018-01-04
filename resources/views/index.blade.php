@@ -60,6 +60,7 @@
                             console.log(res.result);
                             me.hasAnalytics=true;
                             me.analyticsData=res.result.totalsForAllResults;
+                            me.url=angular.copy(document.getElementById(":1").innerText);
                             $scope.$apply();
                         });
                     });
