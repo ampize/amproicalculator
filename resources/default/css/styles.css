@@ -29,5 +29,38 @@
 }
 
 .main {
-    margin-top: calc(0px - 3.5rem);
+    margin-top: 100px;
+}
+
+.input-url {
+  display: block;
+  width: 350px;
+  height: 47px;
+  padding: 6px 12px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #676767;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #cccccc;
+  border-radius: 2px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+
+.submit-btn {
+    font-size: 1rem;
+    font-weight: 400;
+    padding: .7em .8em;
+    text-decoration: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #329F92;
+    color: white;
+    border-radius: 5px;
 }
