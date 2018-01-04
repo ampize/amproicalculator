@@ -27,3 +27,7 @@
         flex: 1;
     }
 }
+
+.main {
+    margin-top: calc(0px - 3.5rem);
+}

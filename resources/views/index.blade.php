@@ -119,7 +119,7 @@
         </div>
     </div>
 </header>
-
+<div class="main">
 <div id="embed-api-auth-container"></div>
 <div id="view-selector-container"></div>
 <input type="text" ng-model="ARC.url">
@@ -127,8 +127,7 @@
 <button ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Preview report with analytics</button>
 <button ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Auth GA</button>
 <iframe ng-if="ARC.hasPreview" ng-src="{{ARC.previewUrl}}" frameborder="0" width="480" height="299"></iframe>
-
-
+</div>
 
 
 
