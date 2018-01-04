@@ -127,10 +127,10 @@
                 <p class="intro">Learn what you could expect from shifting to AMP/PWA and using AMPize with our deep learning based ROI calculator</p>
                 <div id="embed-api-auth-container"></div>
                 <div id="view-selector-container"></div>
+                <a href="" ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Get your real site metrics from Google Analytics</a>
                 <input type="url" class="input-url" ng-model="ARC.url" placeholder="http://" required>
-                <button class="submit-btn" ng-click="ARC.submit()" ng-disabled="ARC.isLoading">Preview report</button>
-                <button class="submit-btn" ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Preview report with analytics</button>
-                <button class="submit-btn" ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Auth GA</button>
+                <button class="submit-btn" ng-click="ARC.submit()" ng-disabled="ARC.isLoading">Estimate your ROI</button>
+                <button class="submit-btn" ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Estimate your ROI from real analytics</button>                
             </div>
             <div class="md-col md-col-6 px2">
                 <iframe ng-if="ARC.hasPreview" ng-src="{{ARC.previewUrl}}" frameborder="0" width="480" height="299"></iframe>
