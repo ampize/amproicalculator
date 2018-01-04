@@ -122,7 +122,7 @@
 <div class="main">
 <div id="embed-api-auth-container"></div>
 <div id="view-selector-container"></div>
-<input type="text" class="input-url" ng-model="ARC.url">
+<input type="url" class="input-url" ng-model="ARC.url" placeholder="http://" required>
 <button class="submit-btn" ng-click="ARC.submit()" ng-disabled="ARC.isLoading">Preview report</button>
 <button class="submit-btn" ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Preview report with analytics</button>
 <button class="submit-btn" ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Auth GA</button>
