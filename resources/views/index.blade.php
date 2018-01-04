@@ -133,8 +133,8 @@
                 </div>
                 <div class="center mt2">
                     <input type="url" class="input-url" ng-model="ARC.url" placeholder="http://" required>
-                    <button class="submit-btn" ng-click="ARC.submit()" ng-disabled="ARC.isLoading">Estimate your ROI</button>
-                    <button class="submit-btn" ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Estimate your ROI from real analytics</button>
+                    <button class="submit-btn" ng-click="ARC.submit()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Estimate your ROI</button>
+                    <button class="submit-btn" ng-click="ARC.submitWithAnalytics()" ng-disabled="ARC.isLoading" ng-show="ARC.hasAnalytics">Estimate your ROI</button>
                 </div>
                 <div>
                     <iframe ng-if="ARC.hasPreview" ng-src="{{ARC.previewUrl}}" frameborder="0" width="480" height="299"></iframe>
