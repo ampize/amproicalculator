@@ -29,7 +29,7 @@
 }
 
 .main {
-    margin-top: 100px;
+    margin-top: 200px;
 }
 
 .input-url {
@@ -64,4 +64,8 @@
     background-color: #329F92;
     color: white;
     border-radius: 5px;
+}
+
+.home-hero {
+    padding-top: 70px;
 }
