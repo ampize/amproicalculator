@@ -6,6 +6,8 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Goutte\Client as GoutteClient;
 use Symfony\Component\DomCrawler\Crawler as DomCrawler;
+use \Mailjet\Resources;
+use \Mailjet\Client as MailClient;
 
 class APIController extends BaseController
 {
@@ -275,6 +277,41 @@ class APIController extends BaseController
             "id" => $reportId,
             "success" => true
 
+        ]);
+    }
+
+    public function sendReportEmail(Request $request)
+    {
+        $url = $request->input("url", null);
+        $email = $request->input("email", null);
+        if (empty($url)||empty($email)) {
+            abort(400, "Missing required params");
+        }
+        $reportId = $this->hasReport($url);
+        if (!$reportId) {
+            abort(404, "Report not found");
+        }
+        $publicKey=getenv("MJ_APIKEY_PUBLIC");
+        $privateKey=getenv("MJ_APIKEY_PRIVATE");
+        if (empty($publicKey)||empty($privateKey)) {
+            abort(500, "Mailer not configured");
+        }
+        $mailJet=new MailClient($publicKey, $privateKey);
+        $body = [
+            'FromEmail' => 'info@ampize.me',
+            'FromName' => 'AMPize',
+            'Subject' => 'AMP ROI Report for '.$url,
+            'Text-part' => '
+            
+            ',
+            'Html-part' => '
+            
+            ',
+            'Recipients' => [['Email' => $email]]
+        ];
+        $mailJet->post(Resources::$Email, ['body' => $body]);
+        return response()->json([
+            "success" => true
         ]);
     }
 
