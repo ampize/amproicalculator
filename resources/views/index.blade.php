@@ -126,6 +126,8 @@
                 <p class="intro center">Learn what you could expect from shifting to AMP/PWA and using AMPize with our deep learning based ROI calculator</p>
                 <div class="center">
                     <a href="" ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Get your real site metrics from Google Analytics</a>
+                </div>
+                <div class="md-col-5 mx-auto">
                     <div id="embed-api-auth-container"></div>
                     <div id="view-selector-container"></div>
                 </div>
