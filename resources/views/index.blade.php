@@ -42,6 +42,7 @@
                 me.previewId=null;
                 me.isLoading=false;
                 me.emailIsLoading=false;
+                me.emailSent=false;
                 me.hasAnalytics=false;
                 me.authorizeGa=function(){
                     gapi.analytics.auth.authorize({
@@ -102,6 +103,13 @@
                 me.sendEmail=function(){
                     if(me.email&&me.email!==""&&me.turl){
                         me.emailIsLoading=true;
+                        me.emailSent=false;
+                        $http.post("/api/send-email?email="+me.email+"&url="+me.turl).then(
+                            function(response){
+                                me.emailIsLoading=false;
+                                me.emailSent=true;
+                            }
+                        );
 
                     }
                 };
@@ -151,10 +159,16 @@
                     </div>
                     <iframe ng-if="ARC.hasPreview&&!ARC.isLoading" ng-src="{{ARC.previewUrl}}" frameborder="0" width="480" height="299"></iframe>
                 </div>
-                <form class="center mt2" ng-if="ARC.hasPreview&&ARC.turl&&!ARC.isLoading" name="emailForm">
-                    <input type="email" class="input-url" ng-model="ARC.email" placeholder="Your email" required>
-                    <button type="submit"  class="submit-btn" ng-click="ARC.sendEmail()"  ng-disabled="ARC.emailIsLoading">Get Report as PDF</button>
+                <form class="center mt2" ng-if="ARC.hasPreview&&ARC.turl&&!ARC.isLoading&&!ARC.emailIsLoading" name="emailForm">
+                    <input type="email" name="email" class="input-url" ng-model="ARC.email" placeholder="Your email" required>
+                    <button type="submit"  class="submit-btn" ng-click="ARC.sendEmail()">Get Report as PDF</button>
                 </form>
+                <div class="center mt2" ng-if="ARC.hasPreview&&ARC.turl&&!ARC.isLoading&&ARC.emailIsLoading">
+                    <div>Loading</div>
+                </div>
+                <div class="center mt2" ng-if="ARC.hasPreview&&ARC.turl&&!ARC.isLoading&&!ARC.emailIsLoading&&ARC.emailSent">
+                    <div>Email sent</div>
+                </div>
         </div>
     </div>
 </div>

@@ -302,10 +302,24 @@ class APIController extends BaseController
             'FromName' => 'AMPize',
             'Subject' => 'AMP ROI Report for '.$url,
             'Text-part' => '
-            
+                Hello
+                You can download your report at https://'.$_SERVER["HTTP_HOST"].'/api/dl-roi-report?url='.$url.'
+                - The AMPize team
             ',
             'Html-part' => '
-            
+            <!doctype html>
+                <html>
+                <head>
+                    <title>AMP ROI Report for '.$url.'</title>
+                    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                </head>
+                <body>
+                    <p>Hello</p>
+                    <p>Click <a href="https://'.$_SERVER["HTTP_HOST"].'/api/dl-roi-report?url='.$url.'">here</a> to download your report.</p>
+                    <p>- The AMPize team</p>
+                </body>
+            </html>
             ',
             'Recipients' => [['Email' => $email]]
         ];
