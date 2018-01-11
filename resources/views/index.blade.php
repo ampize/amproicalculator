@@ -74,10 +74,10 @@
                                 'webPropertyId': res.result.profileInfo.webPropertyId,
                                 'profileId': res.result.profileInfo.profileId
                             }).then(function(vDetail){
-                                console.log(vDetail);
+                                me.url=angular.copy(vDetail.result.websiteUrl);
+                                $scope.$apply();
                             });
-                            me.url=angular.copy(document.getElementById(":1").innerText);
-                            $scope.$apply();
+
                         });
                     });
                 };
