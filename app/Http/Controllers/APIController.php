@@ -131,7 +131,7 @@ class APIController extends BaseController
                     'text' => '{{date}}',
                     'matchCase' => true
                 ),
-                'replaceText' => date('F Y')
+                'replaceText' => date("F", strtotime("last month"))
             )
         ));
         $requests[] = new \Google_Service_Slides_Request(array(

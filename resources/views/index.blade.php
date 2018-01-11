@@ -54,11 +54,17 @@
                     });
                     viewSelector.execute();
                     viewSelector.on('change', function(ids) {
+                        var x = new Date();
+                        x.setDate(1);
+                        x.setMonth(x.getMonth()-1);
+                        var y = new Date();
+                        y.setDate(0);
+                        y.setMonth(x.getMonth());
                         me.hasAnalytics=false;
                         gapi.client.analytics.data.ga.get({
                             'ids': ids,
-                            'start-date': '30daysAgo',
-                            'end-date': 'today',
+                            'start-date': x.toISOString().slice(0,10),
+                            'end-date': y.toISOString().slice(0,10),
                             'metrics': 'ga:users,ga:sessions,ga:pageviewsPerSession'
                         }).then(function(res){
                             me.hasAnalytics=true;
