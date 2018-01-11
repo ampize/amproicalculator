@@ -53,13 +53,18 @@ class APIController extends BaseController
         $gClient->setHeader('User-Agent', "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
         $crawler = $gClient->request('GET', 'https://www.similarweb.com/fr/website/' . $url);
 
-        $screenShotUrl = $crawler->filter(".websiteHeader-screenImg")->first()->attr("src");
+        $sturl=$crawler->filter(".websiteHeader-screenImg");
+        if($sturl->count()>0&&$sturl->first()->attr("src")){
+            $screenShotUrl=$sturl->first()->attr("src");
+        } else {
+            $screenShotUrl="http://via.placeholder.com/240x140";
+        }
 
         if (empty($uniqueVisitors) || empty($averageVisits) || empty($averagePages)) {
             $averageVisits = $crawler->filter(".engagementInfo-valueNumber")->first()->text();
             $averagePages = $crawler->filter(".engagementInfo-value .engagementInfo-valueNumber")->eq(2)->text();
 
-            if (empty($averageVisits) || empty($averagePages) || empty($screenShotUrl)) {
+            if (empty($averageVisits) || empty($averagePages)) {
                 abort(500, "No data found on website");
             }
             $multiplier = 1;
