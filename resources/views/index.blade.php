@@ -54,6 +54,7 @@
                     });
                     viewSelector.execute();
                     viewSelector.on('change', function(ids) {
+                        console.log(viewSelector);
                         var x = new Date();
                         x.setDate(1);
                         x.setMonth(x.getMonth()-1);
