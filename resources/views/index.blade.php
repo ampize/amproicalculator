@@ -91,7 +91,7 @@
                         turl=turl.replace('http://','');
                         me.turl=angular.copy(turl);
                         me.isLoading=true;
-                        $http.post("/api/get-report?pageViews="+me.analyticsData["ga:pageviews"]+"&users="+me.analyticsData["ga:users"]+"&pageviewsPerSession="+me.analyticsData["ga:pageviewsPerSession"].replace('.',',')+"&url="+turl).then(
+                        $http.post("/api/get-report?pageViews="+me.analyticsData["ga:pageviews"]+"&users="+me.analyticsData["ga:users"]+"&pageviewsPerSession="+me.analyticsData["ga:pageviewsPerSession"]+"&url="+turl).then(
                             function(response){
                                 me.isLoading=false;
                                 me.previewUrl=$sce.trustAsResourceUrl('https://docs.google.com/presentation/d/'+response.data.id+'/embed?start=false&loop=false&delayms=3000');
