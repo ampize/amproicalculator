@@ -74,7 +74,6 @@ class APIController extends BaseController
             $averagePages = (string)$averagePages;
             $averageVisits = (string)$averageVisits;
             $uniqueVisitors = (string)$uniqueVisitors;
-            $averagePages = str_replace('.', ',', $averagePages);
         }
         if (empty($uniqueVisitors) || empty($averageVisits) || empty($averagePages)) {
             abort(400, "Missing required params");
@@ -259,6 +258,13 @@ class APIController extends BaseController
         return null;
     }
 
+    protected function deleteReport($id)
+    {
+        $client = $this->getClient();
+        $driveService = new \Google_Service_Drive($client);
+        $driveService->files->delete($id);
+    }
+
 
     public function getReport(Request $request)
     {
@@ -270,11 +276,12 @@ class APIController extends BaseController
             abort(400, "Missing required params");
         }
         $reportId = $this->hasReport($url);
-        if (!$reportId) {
-            $reportId = $this->generateReport($url, $averagePages, $averageVisits, $uniqueVisitors);
+        if ($reportId) {
+            $this->deleteReport($reportId);
         }
+        $newEeportId = $this->generateReport($url, $averagePages, $averageVisits, $uniqueVisitors);
         return response()->json([
-            "id" => $reportId,
+            "id" => $newEeportId,
             "success" => true
 
         ]);
