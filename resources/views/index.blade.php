@@ -69,6 +69,13 @@
                         }).then(function(res){
                             me.hasAnalytics=true;
                             me.analyticsData=res.result.totalsForAllResults;
+                            gapi.client.analytics.management.profiles.get({
+                                'accountId': res.result.profileInfo.accountId,
+                                'webPropertyId': res.result.profileInfo.webPropertyId,
+                                'profileId': res.result.profileInfo.profileId
+                            }).then(function(vDetail){
+                                console.log(vDetail);
+                            });
                             me.url=angular.copy(document.getElementById(":1").innerText);
                             $scope.$apply();
                         });
