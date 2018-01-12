@@ -155,7 +155,7 @@
                 <h1 class="center">AMP ROI Calculator</h1>
                 <p class="intro center">Learn what you could expect from shifting to AMP/PWA either with custom development or by using AMPize.me Saas offer with AMP ROI calculator</p>
                 <div class="center">
-                    <a href="" ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Get your real site metrics from Google Analytics</a>
+                    <a href="" ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Use your real site metrics from Google Analytics (recommended)</a>
                 </div>
                 <div class="md-col-5 mx-auto">
                     <div id="embed-api-auth-container"></div>
