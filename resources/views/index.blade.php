@@ -168,7 +168,7 @@
                 </form>
                 <div class="center mt2">
                     <div ng-if="ARC.isLoading">
-                        Loading
+                        ... Crunching Data ... Please wait ... 
                     </div>
                     <iframe ng-if="ARC.hasPreview&&!ARC.isLoading" ng-src="{{ARC.previewUrl}}" frameborder="0" width="480" height="299"></iframe>
                 </div>
@@ -177,7 +177,7 @@
                     <button type="submit"  class="submit-btn" ng-click="ARC.sendEmail()">Get Report as PDF</button>
                 </form>
                 <div class="center mt2" ng-if="ARC.hasPreview&&ARC.turl&&!ARC.isLoading&&ARC.emailIsLoading">
-                    <div>Loading</div>
+                    <div>Loading...please wait a minute while </div>
                 </div>
                 <div class="center mt2" ng-if="ARC.hasPreview&&ARC.turl&&!ARC.isLoading&&!ARC.emailIsLoading&&ARC.emailSent">
                     <div>Email sent</div>
