@@ -153,7 +153,7 @@
     <div class="clearfix row">
         <div class="md-col-6 mx-auto mb4 home-hero">
                 <h1 class="center">AMP ROI Calculator</h1>
-                <p class="intro center">Learn what you could expect from shifting to AMP/PWA and using AMPize with our deep learning based ROI calculator</p>
+                <p class="intro center">Learn what you could expect from shifting to AMP/PWA and using AMPize with AMP ROI calculator</p>
                 <div class="center">
                     <a href="" ng-click="ARC.authorizeGa()" ng-disabled="ARC.isLoading" ng-show="!ARC.hasAnalytics">Get your real site metrics from Google Analytics</a>
                 </div>
