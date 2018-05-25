@@ -310,7 +310,7 @@ class APIController extends BaseController
         }
         $mailJet=new MailClient($publicKey, $privateKey);
         $body = [
-            'FromEmail' => 'info@ampize.me',
+            'FromEmail' => 'hanna.johnson@webtales.fr',
             'FromName' => 'Hanna at AMPize',
             'Subject' => 'AMP ROI Report for '.$url,
             'Text-part' => '
