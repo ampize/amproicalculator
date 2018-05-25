@@ -315,9 +315,8 @@ class APIController extends BaseController
             'Subject' => 'AMP ROI Report for '.$url,
             'Text-part' => '
                 Hello
-                Thank you for trying out our ROI calculator, we’ve attached your PDF to this email. Impressed by the results? We’d like to offer you a completely free, no strings-attached trial of AMPize for 1 month, so you can see how easy it is to use, and start reaping the rewards of AMP technology right away.
+                Thank you for trying out our ROI calculator. You can download your report at https://'.$_SERVER["HTTP_HOST"].'/api/dl-roi-report?url='.$url.' Impressed by the results? We’d like to offer you a completely free, no strings-attached trial of AMPize for 1 month, so you can see how easy it is to use, and start reaping the rewards of AMP technology right away.
                 The approximate set-up time is 30 minutes, and will start working immediately, giving you fast load-time, instant SEO, and mobile-friendly visibility for your readers. 
-                You can download your report at https://'.$_SERVER["HTTP_HOST"].'/api/dl-roi-report?url='.$url.'
                 If you have any questions, please simply respond to this email, or for personalized support, on my calendar at https://app.hubspot.com/meetings/hanna-johnson and I will be happy to help you! 
                 Kind regards,
                 Hanna Johnson
@@ -332,9 +331,8 @@ class APIController extends BaseController
                 </head>
                 <body>
                     <p>Hello</p>
-                    <p>Thank you for trying out our ROI calculator, we’ve attached your PDF to this email. Impressed by the results? We’d like to offer you a completely free, no strings-attached trial of AMPize for 1 month, so you can see how easy it is to use, and start reaping the rewards of AMP technology right away. </p>
+                    <p>Thank you for trying out our ROI calculator. Click <a href="https://'.$_SERVER["HTTP_HOST"].'/api/dl-roi-report?url='.$url.'">here</a> to download your report. Impressed by the results? We’d like to offer you a completely free, no strings-attached trial of AMPize for 1 month, so you can see how easy it is to use, and start reaping the rewards of AMP technology right away. </p>
                     <p>The approximate set-up time is 30 minutes, and will start working immediately, giving you fast load-time, instant SEO, and mobile-friendly visibility for your readers. </p>
-                    <p>Click <a href="https://'.$_SERVER["HTTP_HOST"].'/api/dl-roi-report?url='.$url.'">here</a> to download your report.</p>
                     <p>If you have any questions, please simply respond to this email, or for personalized support, <a href="https://app.hubspot.com/meetings/hanna-johnson">pick a time</a> on my calendar and I will be happy to help you! </p>
                     <p>Kind regards,</p>
                     
