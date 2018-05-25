@@ -310,8 +310,8 @@ class APIController extends BaseController
         }
         $mailJet=new MailClient($publicKey, $privateKey);
         $body = [
-            'FromEmail' => 'info@ampize.me',
-            'FromName' => 'AMPize',
+            'FromEmail' => 'hanna.johnson@webtales.fr',
+            'FromName' => 'Hanna at AMPize',
             'Subject' => 'AMP ROI Report for '.$url,
             'Text-part' => '
                 Hello
@@ -327,9 +327,14 @@ class APIController extends BaseController
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 </head>
                 <body>
-                    <p>Hello</p>
+                    <p>Hi</p>
+                    <p>Thank you for trying out our ROI calculator, we’ve attached your PDF to this email. Impressed by the results? We’d like to offer you a completely free, no strings-attached trial of AMPize for 1 month, so you can see how easy it is to use, and start reaping the rewards of AMP technology right away. </p>
+                    <p>The approximate set-up time is 30 minutes, and will start working immediately, giving you fast load-time, instant SEO, and mobile-friendly visibility for your readers. </p>
                     <p>Click <a href="https://'.$_SERVER["HTTP_HOST"].'/api/dl-roi-report?url='.$url.'">here</a> to download your report.</p>
-                    <p>- The AMPize team</p>
+                    <p>If you have any questions, please simply respond to this email, or for personalized support, <a href="https://app.hubspot.com/meetings/hanna-johnson">pick a time</a> on my calendar and I will be happy to help you! </p>
+                    <p>Kind regards,</p>
+                    
+                    <p>Hanna Johnson</p>
                 </body>
             </html>
             ',
